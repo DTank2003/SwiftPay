@@ -10,10 +10,10 @@ import { Zap, Globe } from "lucide-react";
 import s from "../auth.module.css";
 
 const stats = [
-  { value: "₹2.4B+", label: "Processed monthly" },
-  { value: "1.2M+", label: "Active users" },
-  { value: "<2s", label: "Avg transfer time" },
-  { value: "99.9%", label: "Uptime SLA" },
+  // { value: "₹2.4B+", label: "Processed monthly" },
+  // { value: "1.2M+", label: "Active users" },
+  // { value: "<2s", label: "Avg transfer time" },
+  // { value: "99.9%", label: "Uptime SLA" },
 ];
 
 export default function LoginPage() {
@@ -54,11 +54,6 @@ export default function LoginPage() {
         </div>
 
         <div className={s.leftBody}>
-          <div className={s.statusBadge}>
-            <span className={s.statusDot} />
-            <span className={s.statusText}>All systems operational</span>
-          </div>
-
           <div>
             <h1 className={s.tagline}>
               Move money.

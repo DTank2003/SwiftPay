@@ -57,29 +57,6 @@
   justify-content: center;
 }
 
-.statusBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: #18181b;
-  border: 0.5px solid #27272a;
-  border-radius: 9999px;
-  padding: 0.375rem 0.75rem;
-  width: fit-content;
-}
-
-.statusDot {
-  width: 0.375rem;
-  height: 0.375rem;
-  border-radius: 50%;
-  background: #22c55e;
-}
-
-.statusText {
-  font-size: 0.6875rem;
-  color: #52525b;
-}
-
 .tagline {
   font-size: 2.25rem;
   font-weight: 600;
@@ -90,12 +67,12 @@
 }
 
 .taglineMuted {
-  color: #3f3f46;
+  color: #71717a;
 }
 
 .taglineSub {
   font-size: 0.875rem;
-  color: #52525b;
+  color: #a1a1aa;
   line-height: 1.6;
   max-width: 18rem;
   margin: 0.75rem 0 0;
@@ -123,13 +100,13 @@
 
 .statLabel {
   font-size: 0.75rem;
-  color: #52525b;
+  color: #a1a1aa;
   margin-top: 0.25rem;
 }
 
 .copyright {
   font-size: 0.75rem;
-  color: #3f3f46;
+  color: #71717a;
 }
 
 /* ── Right panel ── */
@@ -160,7 +137,7 @@
 
 .formSubtitle {
   font-size: 0.875rem;
-  color: #52525b;
+  color: #a1a1aa;
   margin: 0.25rem 0 0;
 }
 
@@ -186,7 +163,7 @@
 .label {
   font-size: 0.6875rem;
   font-weight: 500;
-  color: #52525b;
+  color: #a1a1aa;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -205,11 +182,11 @@
 }
 
 .input::placeholder {
-  color: #3f3f46;
+  color: #71717a;
 }
 
 .input:focus {
-  border-color: #3f3f46;
+  border-color: #71717a;
 }
 
 .inputError {
@@ -227,7 +204,7 @@
 
 .forgotLink {
   font-size: 0.75rem;
-  color: #52525b;
+  color: #a1a1aa;
   text-decoration: none;
   transition: color 0.15s;
 }
@@ -282,14 +259,14 @@
 }
 
 .btnGhost:hover {
-  border-color: #3f3f46;
+  border-color: #71717a;
   color: #a1a1aa;
 }
 
 .spinner {
   width: 0.875rem;
   height: 0.875rem;
-  border: 1.5px solid #52525b;
+  border: 1.5px solid #a1a1aa;
   border-top-color: #09090b;
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
@@ -315,7 +292,7 @@
 
 .dividerText {
   font-size: 0.6875rem;
-  color: #52525b;
+  color: #a1a1aa;
   white-space: nowrap;
   letter-spacing: 0.04em;
 }
@@ -336,7 +313,7 @@
 /* ── Footer ── */
 .footerText {
   font-size: 0.875rem;
-  color: #3f3f46;
+  color: #71717a;
   text-align: center;
   margin-top: 1.75rem;
 }
@@ -349,4 +326,32 @@
 
 .footerLink:hover {
   color: #d4d4d8;
+}
+
+/* ── Mobile responsive ── */
+@media (max-width: 640px) {
+  .right {
+    padding: 1.5rem 1.25rem;
+    align-items: flex-start;
+    padding-top: 3rem;
+  }
+
+  .formCard {
+    max-width: 100%;
+  }
+
+  .formTitle {
+    font-size: 1.25rem;
+  }
+
+  .btnPrimary,
+  .btnGhost {
+    height: 2.875rem;
+    font-size: 0.9375rem;
+  }
+
+  .input {
+    height: 2.875rem;
+    font-size: 0.9375rem;
+  }
 }
