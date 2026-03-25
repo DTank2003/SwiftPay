@@ -29,13 +29,14 @@ model Wallet {
 }
 
 model Transaction {
-  id         String   @id @default(uuid())
-  fromUserId String
-  toUserId   String
-  amount     Float
-  status     String
-  idempotencyKey String @unique
-  createdAt  DateTime @default(now())
+  id             String            @id @default(cuid())
+  fromUserId     String
+  toUserId       String
+  amount         Float
+  status         TransactionStatus @default(PENDING)
+  note           String?
+  idempotencyKey String?           @unique  // prevents duplicate processing
+  createdAt      DateTime          @default(now())
 
   fromUser User @relation("SentTransactions", fields: [fromUserId], references: [id])
   toUser   User @relation("ReceivedTransactions", fields: [toUserId], references: [id])
