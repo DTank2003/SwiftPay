@@ -142,6 +142,7 @@ export default function DashboardPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
+    console.log(res)
     const json = await res.json();
     if (!res.ok) {
       setSendError(json.error || "Payment failed");
@@ -364,11 +365,17 @@ export default function DashboardPage() {
                         className={
                           tx.type === "debit"
                             ? s.txAmountDebit
-                            : s.txAmountCredit
+                            : tx.type === "credit"
+                              ? s.txAmountCredit
+                              : s.txAmountFailed
                         }
                       >
-                        {tx.type === "debit" ? "−" : "+"} ₹
-                        {formatAmount(tx.amount)}
+                        {tx.type === "debit"
+                          ? "− "
+                          : tx.type === "credit"
+                            ? "+ "
+                            : ""}
+                        ₹{formatAmount(tx.amount)}
                       </p>
                       <span
                         className={`${s.badge} ${

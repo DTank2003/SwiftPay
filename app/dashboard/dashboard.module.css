@@ -417,6 +417,14 @@
   gap: 0.25rem;
 }
 
+.txAmountFailed {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #a1a1aa;
+  letter-spacing: -0.01em;
+  text-decoration: line-through;
+}
+
 .txAmountDebit {
   font-size: 0.9375rem;
   font-weight: 600;
@@ -664,7 +672,7 @@
   border-radius: 0.5rem;
   font-size: 0.625rem;
   font-weight: 500;
-  color: #52525b;
+  color: #a1a1aa;
   text-decoration: none;
   background: transparent;
   border: none;

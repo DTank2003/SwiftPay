@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  phone     String   @unique
+  createdAt DateTime @default(now())
+
+  wallet            Wallet?
+  sentTransactions     Transaction[] @relation("SentTransactions")
+  receivedTransactions Transaction[] @relation("ReceivedTransactions")
+}
+
+model Wallet {
+  id      String @id @default(cuid())
+  userId  String @unique
+  balance Float  @default(0)
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Transaction {
+  id             String            @id @default(cuid())
+  fromUserId     String
+  toUserId       String
+  amount         Float
+  status         TransactionStatus @default(PENDING)
+  note           String?
+  idempotencyKey String?           @unique  // prevents duplicate processing
+  createdAt      DateTime          @default(now())
+
+  fromUser User @relation("SentTransactions", fields: [fromUserId], references: [id])
+  toUser   User @relation("ReceivedTransactions", fields: [toUserId], references: [id])
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
