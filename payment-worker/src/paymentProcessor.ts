@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { EachMessagePayload } from "kafkajs";
 import { prisma } from "./db";
 import Redis from "ioredis";
@@ -21,16 +20,10 @@ export async function processPayment(payload: EachMessagePayload) {
     const event: PaymentEvent = JSON.parse(message.value.toString());
     const { transactionId, fromUserId, toUserId, amount, note } = event;
 
-    console.log(`[WORKER] Processing transaction: ${transactionId}`);
-
     const existing = await prisma.transaction.findUnique({
         where: { id: transactionId },
     });
-
-    if (!existing || existing.status !== "PENDING") {
-        console.log(`[WORKER] Skipping ${transactionId} — status: ${existing?.status}`);
-        return;
-    }
+    if (!existing || existing.status !== "PENDING") return;
 
     try {
         let completed = false;
@@ -52,12 +45,10 @@ export async function processPayment(payload: EachMessagePayload) {
                 where: { userId: fromUserId },
                 data: { balance: { decrement: amount } },
             });
-
             await tx.wallet.update({
                 where: { userId: toUserId },
                 data: { balance: { increment: amount } },
             });
-
             await tx.transaction.update({
                 where: { id: transactionId },
                 data: { status: "COMPLETED" },
@@ -67,11 +58,13 @@ export async function processPayment(payload: EachMessagePayload) {
         });
 
         if (completed) {
+            // Fetch sender name for the notification
             const sender = await prisma.user.findUnique({
                 where: { id: fromUserId },
                 select: { name: true },
             });
 
+            // Notify receiver — their SSE connection is subscribed to this channel
             await publisher.publish(
                 `notifications:${toUserId}`,
                 JSON.stringify({
@@ -84,6 +77,7 @@ export async function processPayment(payload: EachMessagePayload) {
                 })
             );
 
+            // Notify sender that payment completed
             await publisher.publish(
                 `notifications:${fromUserId}`,
                 JSON.stringify({
@@ -93,12 +87,6 @@ export async function processPayment(payload: EachMessagePayload) {
                     timestamp: new Date().toISOString(),
                 })
             );
-
-            // Invalidate Redis balance cache for both users
-            await Promise.all([
-                publisher.del(`wallet:balance:${fromUserId}`),
-                publisher.del(`wallet:balance:${toUserId}`),
-            ]);
 
             console.log(`[WORKER] Completed + notified: ${transactionId}`);
         }

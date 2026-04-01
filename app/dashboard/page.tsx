@@ -13,6 +13,7 @@ import {
   History,
   QrCode,
   LogOut,
+  BarChart2,
 } from "lucide-react";
 import s from "./dashboard.module.css";
 
@@ -142,7 +143,7 @@ export default function DashboardPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-    console.log(res)
+    console.log(res);
     const json = await res.json();
     if (!res.ok) {
       setSendError(json.error || "Payment failed");
@@ -154,9 +155,52 @@ export default function DashboardPage() {
     const balRes = await fetch("/api/wallet/balance");
     const { balance } = await balRes.json();
     setBalance(balance);
-    fetchTransactions(1);
     setPage(1);
   }
+
+  // ── Real-time notifications via SSE ──
+  useEffect(() => {
+    if (loading) return;
+
+    const es = new EventSource("/api/notifications/sse");
+
+    es.onmessage = (e) => {
+      const event = JSON.parse(e.data);
+
+      if (event.type === "payment_received") {
+        // Refresh balance silently
+        fetch("/api/wallet/balance")
+          .then((r) => r.json())
+          .then(({ balance }) => setBalance(balance));
+
+        // Refresh transaction list
+        fetchTransactions(1);
+        setPage(1);
+
+        // Show toast
+        setSendSuccess(
+          `₹${formatAmount(event.amount)} received from ${event.fromName}!`,
+        );
+        setTimeout(() => setSendSuccess(""), 5000);
+      }
+
+      if (event.type === "payment_sent") {
+        // Payment worker confirmed our send
+        fetch("/api/wallet/balance")
+          .then((r) => r.json())
+          .then(({ balance }) => setBalance(balance));
+        fetchTransactions(1);
+        setPage(1);
+      }
+    };
+
+    es.onerror = () => {
+      // EventSource auto-reconnects — no manual handling needed
+      console.warn("[SSE] Connection error, will retry...");
+    };
+
+    return () => es.close(); // cleanup on unmount
+  }, [loading, fetchTransactions]);
 
   // ── Logout ──
   async function logout() {
@@ -206,9 +250,9 @@ export default function DashboardPage() {
           <History size={14} strokeWidth={1.5} />
           Dashboard
         </Link>
-        <Link href="/dashboard/qr" className={s.navItem}>
-          <QrCode size={14} strokeWidth={1.5} />
-          QR Code
+        <Link href="/dashboard/analytics" className={s.navItem}>
+          <BarChart2 size={14} strokeWidth={1.5} />
+          Analytics
         </Link>
 
         <div className={s.sidebarFooter}>
@@ -430,9 +474,9 @@ export default function DashboardPage() {
           <History size={18} strokeWidth={1.5} />
           Home
         </Link>
-        <Link href="/dashboard/qr" className={s.bottomNavItem}>
-          <QrCode size={18} strokeWidth={1.5} />
-          QR Pay
+        <Link href="/dashboard/analytics" className={s.bottomNavItem}>
+          <BarChart2 size={18} strokeWidth={1.5} />
+          Analytics
         </Link>
         <button className={s.bottomNavItem} onClick={logout}>
           <LogOut size={18} strokeWidth={1.5} />
