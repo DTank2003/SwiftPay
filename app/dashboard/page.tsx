@@ -18,7 +18,7 @@ interface Transaction {
   type: "debit" | "credit" | "failed";
   note: string | null;
   createdAt: string;
-  counterparty: { name: string; email: string };
+  counterparty: { name: string; phone: string };
 }
 
 interface Pagination {
@@ -30,7 +30,9 @@ interface Pagination {
 }
 
 const sendSchema = z.object({
-  toEmail: z.string().email("Invalid email"),
+  toPhone: z
+    .string()
+    .regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit mobile number"),
   amount: z.coerce
     .number()
     .positive("Must be positive")
@@ -176,15 +178,15 @@ export default function DashboardPage() {
           <form className={s.sendForm} onSubmit={handleSubmit(onSend)}>
             <div className={s.sendRow}>
               <div>
-                <label className={s.fieldLabel}>Recipient email</label>
+                <label className={s.fieldLabel}>Recipient mobile</label>
                 <input
-                  {...register("toEmail")}
-                  type="email"
-                  placeholder="friend@example.com"
-                  className={`${s.input} ${errors.toEmail ? s.inputError : ""}`}
+                  {...register("toPhone")}
+                  type="text"
+                  placeholder="9876543210"
+                  className={`${s.input} ${errors.toPhone ? s.inputError : ""}`}
                 />
-                {errors.toEmail && (
-                  <p className={s.errorText}>{errors.toEmail.message}</p>
+                {errors.toPhone && (
+                  <p className={s.errorText}>{errors.toPhone.message}</p>
                 )}
               </div>
               <div>

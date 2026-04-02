@@ -34,8 +34,8 @@ export async function GET(req: NextRequest) {
         prisma.transaction.findMany({
             where,
             include: {
-                fromUser: { select: { id: true, name: true, email: true } },
-                toUser: { select: { id: true, name: true, email: true } },
+                fromUser: { select: { id: true, name: true, phone: true } },
+                toUser: { select: { id: true, name: true, phone: true } },
             },
             orderBy: { createdAt: "desc" },
             skip,
@@ -55,8 +55,8 @@ export async function GET(req: NextRequest) {
             : "credit",
         counterparty:
             tx.fromUserId === userId
-                ? { name: tx.toUser.name, email: tx.toUser.email }
-                : { name: tx.fromUser.name, email: tx.fromUser.email },
+                ? { name: tx.toUser.name, phone: tx.toUser.phone }
+                : { name: tx.fromUser.name, phone: tx.fromUser.phone },
     }));
 
     return NextResponse.json({

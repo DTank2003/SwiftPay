@@ -5,7 +5,9 @@ import { getProducer } from "@/lib/kafka";
 import { checkRateLimit } from "@/lib/rateLimit";
 
 const sendSchema = z.object({
-    toEmail: z.string().email(),
+    toPhone: z
+        .string()
+        .regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit mobile number"),
     amount: z.number().positive().max(100000),
     note: z.string().max(100).optional(),
 });
@@ -40,12 +42,12 @@ export async function POST(req: NextRequest) {
     const parsed = sendSchema.safeParse(body);
     if (!parsed.success) {
         return NextResponse.json(
-            { error: parsed.error.errors[0].message },
+            { error: parsed.error.issues[0].message },
             { status: 400 }
         );
     }
 
-    const { toEmail, amount, note } = parsed.data;
+    const { toPhone, amount, note } = parsed.data;
 
     // 3. Load sender wallet + receiver in one query
     const [sender, receiver] = await Promise.all([
@@ -54,8 +56,8 @@ export async function POST(req: NextRequest) {
             include: { wallet: true },
         }),
         prisma.user.findUnique({
-            where: { email: toEmail },
-            select: { id: true, name: true, email: true },
+            where: { phone: toPhone },
+            select: { id: true, name: true, phone: true },
         }),
     ]);
 
