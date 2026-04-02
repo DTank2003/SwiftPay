@@ -9,7 +9,7 @@ import { loginSchema, LoginInput } from "@/lib/validations/auth";
 import { Zap, Globe } from "lucide-react";
 import s from "../auth.module.css";
 
-const stats = [
+const stats: { value: string; label: string }[] = [
   // { value: "₹2.4B+", label: "Processed monthly" },
   // { value: "1.2M+", label: "Active users" },
   // { value: "<2s", label: "Avg transfer time" },

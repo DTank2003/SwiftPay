@@ -88,6 +88,14 @@ export async function processPayment(payload: EachMessagePayload) {
                 })
             );
 
+            await prisma.notification.create({
+                data: {
+                    userId: toUserId,
+                    type: "payment_received",
+                    text: `₹${amount} received from ${sender?.name ?? "Someone"}`,
+                },
+            });
+
             console.log(`[WORKER] Completed + notified: ${transactionId}`);
         }
     } catch (error) {

@@ -691,3 +691,140 @@
 .bottomNavItemActive {
   color: #fafafa;
 }
+
+/* ── Notifications ── */
+.topbarBtn {
+  position: relative;
+  width: 2rem;
+  height: 2rem;
+  background: #18181b;
+  border: 0.5px solid #27272a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #71717a;
+  transition: border-color 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.topbarBtn:hover {
+  border-color: #71717a;
+  color: #a1a1aa;
+}
+
+.notifBadge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 1rem;
+  height: 1rem;
+  background: #4ade80;
+  border-radius: 50%;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  color: #052e16;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.notifDropdown {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  right: 0;
+  width: 22rem;
+  background: #111113;
+  border: 0.5px solid #27272a;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  z-index: 100;
+}
+
+.notifDropdownHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1rem;
+  border-bottom: 0.5px solid #18181b;
+}
+
+.notifDropdownTitle {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #fafafa;
+}
+
+.notifClearBtn {
+  font-size: 0.75rem;
+  color: #a1a1aa;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.15s;
+  padding: 0;
+}
+
+.notifClearBtn:hover {
+  color: #a1a1aa;
+}
+
+.notifList {
+  max-height: 20rem;
+  overflow-y: auto;
+}
+
+.notifItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 0.5px solid #18181b;
+  transition: background-color 0.1s;
+}
+
+.notifItem:last-child {
+  border-bottom: none;
+}
+
+.notifItem:hover {
+  background: #18181b;
+}
+
+.notifItemText {
+  font-size: 0.8125rem;
+  color: #d4d4d8;
+}
+
+.notifItemTime {
+  font-size: 0.6875rem;
+  color: #71717a;
+}
+
+.notifEmpty {
+  padding: 2rem 1rem;
+  text-align: center;
+  font-size: 0.8125rem;
+  color: #71717a;
+}
+
+.notifItemReceived {
+  border-left: 2px solid #4ade80;
+  padding-left: 0.75rem;
+}
+
+.notifItemSent {
+  border-left: 2px solid #a1a1aa;
+  padding-left: 0.75rem;
+}
+
+/* Wrapper for positioning dropdown */
+.topbarActionsInner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}

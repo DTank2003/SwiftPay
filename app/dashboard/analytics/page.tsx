@@ -33,6 +33,7 @@ interface RecentTx {
   type: "debit" | "credit";
   counterparty: string;
   createdAt: string;
+  note?: string;
 }
 
 function formatAmount(n: number) {
@@ -114,7 +115,7 @@ export default function AnalyticsPage() {
       </div>
     );
   }
-
+console.log(recent)
   return (
     <div className={s.page}>
       <div>
@@ -208,7 +209,10 @@ export default function AnalyticsPage() {
             <div key={tx.id} className={s.recentRow}>
               <div>
                 <p className={s.recentName}>{tx.counterparty}</p>
-                <p className={s.recentDate}>{formatDate(tx.createdAt)}</p>
+                <p className={s.txMeta}>
+                  {tx.note ? `${tx.note} · ` : ""}
+                  {formatDate(tx.createdAt)}
+                </p>
               </div>
               <p
                 className={

@@ -42,6 +42,15 @@ model Transaction {
   toUser   User @relation("ReceivedTransactions", fields: [toUserId], references: [id])
 }
 
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  type      String
+  text      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
 enum TransactionStatus {
   PENDING
   COMPLETED

@@ -79,6 +79,7 @@ export async function POST(req: NextRequest) {
             toUserId: receiver.id,
             amount,
             status: "PENDING",
+            note: note ?? "",
         },
     });
 

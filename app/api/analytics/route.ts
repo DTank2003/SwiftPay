@@ -131,6 +131,7 @@ export async function GET(req: NextRequest) {
             type: tx.fromUserId === userId ? "debit" : "credit",
             counterparty: tx.fromUserId === userId ? tx.toUser.name : tx.fromUser.name,
             createdAt: tx.createdAt,
+            note: tx.note ?? "",
         })),
     });
 }
