@@ -63,7 +63,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
       ]);
 
       if (!userRes.ok) {
-        router.push("/login");
+        // router.push("/login");
         return;
       }
 
