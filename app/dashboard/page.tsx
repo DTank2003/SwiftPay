@@ -123,20 +123,32 @@ export default function DashboardPage() {
   async function onSend(data: SendInput) {
     console.log(data);
     setSendError("");
-    const res = await fetch("/api/wallet/send", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    const json = await res.json();
-    if (!res.ok) {
-      setSendError(json.error || "Payment failed");
-      return;
+    try {
+      const res = await fetch("/api/wallet/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      let json;
+      try {
+        json = await res.json();
+      } catch (e) {
+        throw new Error("Server returned an invalid response");
+      }
+
+      if (!res.ok) {
+        setSendError(json.error || "Payment failed");
+        return;
+      }
+      reset();
+      refreshBalance();
+      fetchTransactions(1);
+      setPage(1);
+    } catch (err: any) {
+      console.error("[ON_SEND_ERROR]", err);
+      setSendError(err.message || "An unexpected error occurred");
     }
-    reset();
-    refreshBalance();
-    fetchTransactions(1);
-    setPage(1);
   }
 
   if (loading) {

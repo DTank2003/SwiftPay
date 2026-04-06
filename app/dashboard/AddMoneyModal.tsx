@@ -30,38 +30,58 @@ function CheckoutForm({
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
+    if (loading) return;
     e.preventDefault();
     if (!stripe || !elements) return;
     setLoading(true);
     setError("");
 
-    const { error: stripeError, paymentIntent } = await stripe.confirmPayment({
-      elements,
-      redirect: "if_required",
-    });
+    try {
+      const { error: stripeError, paymentIntent } = await stripe.confirmPayment(
+        {
+          elements,
+          redirect: "if_required",
+          confirmParams: {
+            return_url: `${window.location.origin}/dashboard`,
+          },
+        },
+      );
 
-    if (stripeError) {
-      setError(stripeError.message ?? "Payment failed");
-      setLoading(false);
-      return;
-    }
-
-    if (paymentIntent?.status === "succeeded") {
-      const res = await fetch("/api/wallet/add-money/confirm", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ paymentIntentId: paymentIntent.id }),
-      });
-      const json = await res.json();
-      if (!res.ok) {
-        setError(json.error || "Failed to credit wallet");
+      if (stripeError) {
+        setError(stripeError.message ?? "Payment failed");
         setLoading(false);
         return;
       }
-      onSuccess(json.newBalance);
-    }
 
-    setLoading(false);
+      if (paymentIntent?.status === "succeeded") {
+        const res = await fetch("/api/wallet/add-money/confirm", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ paymentIntentId: paymentIntent.id }),
+        });
+
+        // Ensure we handle non-JSON responses (e.g. 500 errors)
+        let json;
+        try {
+          json = await res.json();
+        } catch (e) {
+          throw new Error("Server returned an invalid response");
+        }
+
+        if (!res.ok) {
+          setError(json.error || "Failed to credit wallet");
+          setLoading(false);
+          return;
+        }
+        onSuccess(json.newBalance);
+        setError("");
+      }
+    } catch (err: any) {
+      console.error("[SUBMIT_PAYMENT_ERROR]", err);
+      setError(err.message || "An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -120,19 +140,31 @@ export function AddMoneyModal({
     setLoading(true);
     setError("");
 
-    const res = await fetch("/api/wallet/add-money/create-intent", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount: amt }),
-    });
-    const json = await res.json();
-    if (!res.ok) {
-      setError(json.error);
+    try {
+      const res = await fetch("/api/wallet/add-money/create-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: amt }),
+      });
+
+      let json;
+      try {
+        json = await res.json();
+      } catch (e) {
+        throw new Error("Server returned an invalid response");
+      }
+
+      if (!res.ok) {
+        setError(json.error || "Failed to initiate payment");
+        return;
+      }
+      setClientSecret(json.clientSecret);
+    } catch (err: any) {
+      console.error("[PROCEED_PAYMENT_ERROR]", err);
+      setError(err.message || "An unexpected error occurred");
+    } finally {
       setLoading(false);
-      return;
     }
-    setClientSecret(json.clientSecret);
-    setLoading(false);
   }
 
   const stripeOptions = {
