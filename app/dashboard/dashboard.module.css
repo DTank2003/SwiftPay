@@ -828,3 +828,157 @@
   align-items: center;
   gap: 0.75rem;
 }
+
+.quickAmountActive {
+  border-color: #fafafa;
+  color: #fafafa;
+}
+
+.toast {
+  position: fixed;
+  top: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111113;
+  border: 0.5px solid #27272a;
+  border-radius: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  z-index: 200;
+  animation: slideDown 0.2s ease;
+}
+
+.toastText {
+  font-size: 0.8125rem;
+  color: #4ade80;
+  white-space: nowrap;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateX(-50%) translateY(-0.5rem); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── Modal overlay ── */
+/* ── Modal overlay ── */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 150;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.modal {
+  background: #111113;
+  border: 0.5px solid #27272a;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  width: 100%;
+  max-width: 45rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: auto;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.modalTitle {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #fafafa;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.modalSubtitle {
+  font-size: 0.75rem;
+  color: #52525b;
+  margin: 0.2rem 0 0;
+}
+
+.modalCloseBtn {
+  background: transparent;
+  border: none;
+  color: #52525b;
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0.125rem 0.25rem;
+  transition: color 0.15s;
+  flex-shrink: 0;
+  font-family: inherit;
+}
+
+.modalCloseBtn:hover {
+  color: #a1a1aa;
+}
+
+.modalActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.modalActions .btnGhost,
+.modalActions .btnPrimary {
+  flex: 1;
+}
+
+.quickAmounts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.quickAmount {
+  height: 2rem;
+  background: #18181b;
+  border: 0.5px solid #27272a;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-family: inherit;
+  color: #71717a;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.quickAmount:hover {
+  border-color: #3f3f46;
+  color: #a1a1aa;
+}
+
+.quickAmountActive {
+  border-color: #fafafa;
+  color: #fafafa;
+}
+
+/* Stripe form spacing */
+.checkoutForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.modalStatus {
+  font-size: 0.8125rem;
+  color: #52525b;
+  text-align: center;
+}
+
+.modalStatusSuccess {
+  color: #4ade80;
+}
+
+.badgeTopup {
+  background: #0c1a2e;
+  color: #60a5fa;
+  border: 0.5px solid #1e40af;
+}

@@ -93,7 +93,7 @@ export function Topbar() {
                       }`}
                     >
                       <p className={s.notifItemText}>{n.text}</p>
-                      <p className={s.notifItemTime}>{timeAgo(n.createdAt)}</p>
+                      <p className={s.notifItemTime}>{timeAgo(n.time)}</p>
                     </div>
                   ))
               )}

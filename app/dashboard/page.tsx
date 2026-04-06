@@ -4,18 +4,16 @@ import { useEffect, useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import {
-  ArrowUpRight,
-  ArrowDownLeft,
-} from "lucide-react";
+import { ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import { useDashboard } from "./_components/DashboardProvider";
 import s from "./dashboard.module.css";
+import { AddMoneyModal } from "./AddMoneyModal";
 
 interface Transaction {
   id: string;
   amount: number;
   status: "PENDING" | "COMPLETED" | "FAILED";
-  type: "debit" | "credit" | "failed";
+  type: "debit" | "credit" | "failed" | "topup";
   note: string | null;
   createdAt: string;
   counterparty: { name: string; phone: string };
@@ -74,6 +72,14 @@ export default function DashboardPage() {
   const [page, setPage] = useState(1);
   const [txLoading, setTxLoading] = useState(false);
   const [sendError, setSendError] = useState("");
+  const [addMoneyOpen, setAddMoneyOpen] = useState(false);
+  const [balancee, setBalancee] = useState<number | null>(null);
+  const [toast, setToast] = useState("");
+
+  function showToast(msg: string) {
+    setToast(msg);
+    setTimeout(() => setToast(""), 4000);
+  }
 
   const {
     register,
@@ -109,12 +115,13 @@ export default function DashboardPage() {
     };
 
     window.addEventListener("wallet_update", handleWalletUpdate);
-    return () => window.removeEventListener("wallet_update", handleWalletUpdate);
+    return () =>
+      window.removeEventListener("wallet_update", handleWalletUpdate);
   }, [fetchTransactions]);
 
   // ── Send ──
   async function onSend(data: SendInput) {
-    console.log(data)
+    console.log(data);
     setSendError("");
     const res = await fetch("/api/wallet/send", {
       method: "POST",
@@ -165,7 +172,10 @@ export default function DashboardPage() {
           </p>
           <p className={s.balanceMeta}>{user?.email}</p>
           <div className={s.balanceActions}>
-            <button className={s.btnGhost}>
+            <button
+              className={s.btnGhost}
+              onClick={() => setAddMoneyOpen(true)}
+            >
               <ArrowDownLeft size={13} strokeWidth={1.5} />
               Add money
             </button>
@@ -243,9 +253,7 @@ export default function DashboardPage() {
         <div className={s.historyHeader}>
           <p className={s.historyTitle}>Transaction history</p>
           {pagination && (
-            <p className={s.historyCount}>
-              {pagination.total} transactions
-            </p>
+            <p className={s.historyCount}>{pagination.total} transactions</p>
           )}
         </div>
 
@@ -286,26 +294,32 @@ export default function DashboardPage() {
                         ? s.txAmountDebit
                         : tx.type === "credit"
                           ? s.txAmountCredit
-                          : s.txAmountFailed
+                          : tx.type === "topup"
+                            ? s.txAmountCredit // green, same as received
+                            : s.txAmountFailed
                     }
                   >
                     {tx.type === "debit"
                       ? "− "
                       : tx.type === "credit"
                         ? "+ "
-                        : ""}
+                        : tx.type === "topup"
+                          ? "+ "
+                          : ""}
                     ₹{formatAmount(tx.amount)}
                   </p>
                   <span
                     className={`${s.badge} ${
-                      tx.status === "COMPLETED"
-                        ? s.badgeCompleted
-                        : tx.status === "PENDING"
-                          ? s.badgePending
-                          : s.badgeFailed
+                      tx.status === "COMPLETED" && tx.type === "topup"
+                        ? s.badgeTopup
+                        : tx.status === "COMPLETED"
+                          ? s.badgeCompleted
+                          : tx.status === "PENDING"
+                            ? s.badgePending
+                            : s.badgeFailed
                     }`}
                   >
-                    {tx.status.toLowerCase()}
+                    {tx.type === "topup" ? "top-up" : tx.status.toLowerCase()}
                   </span>
                 </div>
               </div>
@@ -338,6 +352,22 @@ export default function DashboardPage() {
           </>
         )}
       </div>
+      {toast && (
+        <div className={s.toast}>
+          <p className={s.toastText}>{toast}</p>
+        </div>
+      )}
+      {addMoneyOpen && (
+        <AddMoneyModal
+          onClose={() => setAddMoneyOpen(false)}
+          onSuccess={(newBalance) => {
+            // setBalancee(newBalance);
+            refreshBalance();
+            fetchTransactions(page);
+            showToast(`Wallet topped up successfully`);
+          }}
+        />
+      )}
     </div>
   );
 }

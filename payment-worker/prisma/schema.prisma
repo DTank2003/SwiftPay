@@ -34,11 +34,12 @@ model Transaction {
   toUserId       String
   amount         Float
   status         TransactionStatus @default(PENDING)
+  type           TransactionType   @default(P2P)
   note           String?
   idempotencyKey String?           @unique  // prevents duplicate processing
   createdAt      DateTime          @default(now())
 
-  fromUser User @relation("SentTransactions", fields: [fromUserId], references: [id])
+  fromUser User? @relation("SentTransactions", fields: [fromUserId], references: [id])
   toUser   User @relation("ReceivedTransactions", fields: [toUserId], references: [id])
 }
 
@@ -49,6 +50,11 @@ model Notification {
   text      String
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
+}
+
+enum TransactionType {
+  P2P
+  TOP_UP
 }
 
 enum TransactionStatus {

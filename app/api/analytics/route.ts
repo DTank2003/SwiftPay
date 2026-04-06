@@ -27,6 +27,7 @@ export async function GET(req: NextRequest) {
             where: {
                 fromUserId: userId,
                 status: "COMPLETED",
+                type: "P2P",
                 createdAt: { gte: monthStart },
             },
             _sum: { amount: true },
@@ -37,6 +38,7 @@ export async function GET(req: NextRequest) {
             where: {
                 toUserId: userId,
                 status: "COMPLETED",
+                type: "P2P",
                 createdAt: { gte: monthStart },
             },
             _sum: { amount: true },
@@ -47,6 +49,7 @@ export async function GET(req: NextRequest) {
             where: {
                 OR: [{ fromUserId: userId }, { toUserId: userId }],
                 status: "COMPLETED",
+                type: "P2P",
                 createdAt: { gte: monthStart },
             },
         }),
@@ -56,6 +59,7 @@ export async function GET(req: NextRequest) {
             where: {
                 OR: [{ fromUserId: userId }, { toUserId: userId }],
                 status: "COMPLETED",
+                type: "P2P",
                 createdAt: { gte: weekAgo },
             },
             select: {
@@ -70,8 +74,8 @@ export async function GET(req: NextRequest) {
         prisma.transaction.findMany({
             where: {
                 OR: [
-                    { fromUserId: userId, status: "COMPLETED" },
-                    { toUserId: userId, status: "COMPLETED" },
+                    { fromUserId: userId, status: "COMPLETED", type: "P2P" },
+                    { toUserId: userId, status: "COMPLETED", type: "P2P" },
                 ],
             },
             include: {

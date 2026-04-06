@@ -19,7 +19,7 @@ interface Notification {
   id: string;
   type: "payment_received" | "payment_sent";
   text: string;
-  createdAt: string;
+  time: string;
   read: boolean;
 }
 

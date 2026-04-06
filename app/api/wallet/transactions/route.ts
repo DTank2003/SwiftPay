@@ -44,20 +44,36 @@ export async function GET(req: NextRequest) {
         prisma.transaction.count({ where }),
     ]);
 
-    const annotated = transactions.map((tx) => ({
-        id: tx.id,
-        amount: tx.amount,
-        status: tx.status,
-        note: tx.note,
-        createdAt: tx.createdAt,
-        type: tx.fromUserId === userId
-            ? (tx.status === "COMPLETED" ? "debit" : "failed")
-            : "credit",
-        counterparty:
-            tx.fromUserId === userId
-                ? { name: tx.toUser.name, phone: tx.toUser.phone }
-                : { name: tx.fromUser.name, phone: tx.fromUser.phone },
-    }));
+    const annotated = transactions.map((tx) => {
+        // TOP_UP — always a credit, no counterparty
+        if (tx.type === "TOP_UP") {
+            return {
+                id: tx.id,
+                amount: tx.amount,
+                status: tx.status,
+                type: "topup" as const,
+                note: tx.note,
+                createdAt: tx.createdAt,
+                counterparty: { name: "Wallet top-up", email: "" },
+            };
+        }
+
+        // P2P
+        return {
+            id: tx.id,
+            amount: tx.amount,
+            status: tx.status,
+            type: tx.fromUserId === userId
+                ? (tx.status === "COMPLETED" ? "debit" : "failed")
+                : "credit",
+            note: tx.note,
+            createdAt: tx.createdAt,
+            counterparty:
+                tx.fromUserId === userId
+                    ? { name: tx.toUser.name, phone: tx.toUser.phone }
+                    : { name: tx.fromUser!.name, phone: tx.fromUser!.phone },
+        };
+    });
 
     return NextResponse.json({
         transactions: annotated,
