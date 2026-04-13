@@ -55,7 +55,7 @@ interface Notification {
 }
 
 const sendSchema = z.object({
-  toEmail: z.string().email("Invalid email"),
+  toPhone: z.string("Invalid phone number"),
   amount: z.coerce
     .number()
     .positive("Must be positive")
@@ -420,15 +420,15 @@ export default function DashboardPage() {
             <form className={s.sendForm} onSubmit={handleSubmit(onSend)}>
               <div className={s.sendRow}>
                 <div>
-                  <label className={s.fieldLabel}>Recipient email</label>
+                  <label className={s.fieldLabel}>Recipient phone number</label>
                   <input
-                    {...register("toEmail")}
-                    type="email"
-                    placeholder="friend@example.com"
-                    className={`${s.input} ${errors.toEmail ? s.inputError : ""}`}
+                    {...register("toPhone")}
+                    type="tel"
+                    placeholder="123-456-7890"
+                    className={`${s.input} ${errors.toPhone ? s.inputError : ""}`}
                   />
-                  {errors.toEmail && (
-                    <p className={s.errorText}>{errors.toEmail.message}</p>
+                  {errors.toPhone && (
+                    <p className={s.errorText}>{errors.toPhone.message}</p>
                   )}
                 </div>
                 <div>
