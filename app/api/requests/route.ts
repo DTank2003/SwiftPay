@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { redis } from "@/lib/redis";
 import { z } from "zod";
+import { redisPublisher } from "@/lib/redisPublisher";
 
 const createSchema = z.object({
     toPhone: z
@@ -47,7 +48,7 @@ export const POST = (async (req: NextRequest) => {
     });
 
     // Notify the person being requested via SSE
-    await redis.publish(
+    await redisPublisher.publish(
         `notifications:${toUser.id}`,
         JSON.stringify({
             type: "payment_request",
@@ -58,6 +59,15 @@ export const POST = (async (req: NextRequest) => {
             timestamp: new Date().toISOString(),
         })
     );
+
+    // Also create a persistent notification
+    await prisma.notification.create({
+        data: {
+            userId: toUser.id,
+            type: "payment_request",
+            text: `₹${amount} requested by ${fromUser?.name ?? "Someone"}`,
+        },
+    });
 
     return NextResponse.json({ request });
 });

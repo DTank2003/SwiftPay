@@ -1,11 +1,20 @@
 import { NextRequest } from "next/server";
 import Redis from "ioredis";
+import { verifyToken } from "@/lib/auth";
 
 export const runtime = "nodejs"; // SSE needs Node.js runtime, not edge
 
 export async function GET(req: NextRequest) {
-    const userId = req.headers.get("x-user-id");
-    if (!userId) {
+    const token = req.cookies.get("token")?.value;
+    if (!token) {
+        return new Response("Unauthorized", { status: 401 });
+    }
+
+    let userId: string;
+    try {
+        const payload = verifyToken(token);
+        userId = payload.userId;
+    } catch {
         return new Response("Unauthorized", { status: 401 });
     }
 
@@ -29,6 +38,7 @@ export async function GET(req: NextRequest) {
             });
 
             subscriber.on("message", (_channel, message) => {
+                console.log(`[SSE] Received on ${channel}:`, message);
                 try {
                     // SSE format: "data: <json>\n\n"
                     controller.enqueue(`data: ${message}\n\n`);

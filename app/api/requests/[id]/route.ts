@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getProducer } from "@/lib/kafka";
 import { redis } from "@/lib/redis";
 import { z } from "zod";
+import { redisPublisher } from "@/lib/redisPublisher";
 
 const actionSchema = z.object({
     action: z.enum(["accept", "reject"]),
@@ -42,7 +43,7 @@ export const POST = (async (
         });
 
         // Notify requester
-        await redis.publish(
+        await redisPublisher.publish(
             `notifications:${request.fromUserId}`,
             JSON.stringify({
                 type: "request_rejected",
@@ -51,6 +52,15 @@ export const POST = (async (
                 timestamp: new Date().toISOString(),
             })
         );
+
+        // Create persistent notification
+        await prisma.notification.create({
+            data: {
+                userId: request.fromUserId,
+                type: "request_rejected",
+                text: `Your payment request of ₹${request.amount} was rejected`,
+            },
+        });
 
         return NextResponse.json({ status: "REJECTED" });
     }

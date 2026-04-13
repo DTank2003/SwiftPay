@@ -175,10 +175,11 @@ export default function DashboardPage() {
 
   // ── Bootstrap ──
   const fetchAll = useCallback(async () => {
-    const [userRes, balRes, analyticsRes] = await Promise.all([
+    const [userRes, balRes, analyticsRes, notifRes] = await Promise.all([
       fetch("/api/auth/me"),
       fetch("/api/wallet/balance"),
       fetch("/api/analytics"),
+      fetch("/api/notifications/list"),
     ]);
 
     if (!userRes.ok) {
@@ -189,12 +190,14 @@ export default function DashboardPage() {
     const { user } = await userRes.json();
     const { balance } = await balRes.json();
     const { summary, daily, recent } = await analyticsRes.json();
+    const { notifications } = await notifRes.json();
 
     setUser(user);
     setBalance(balance);
     setSummary(summary);
     setDaily(daily);
     setRecent(recent);
+    setNotifications(notifications);
     setLoading(false);
   }, [router]);
 
@@ -215,32 +218,20 @@ export default function DashboardPage() {
         .then(({ balance }) => setBalance(balance));
       fetchAll();
 
-      if (event.type === "payment_received") {
-        setNotifications((prev) => [
-          {
-            id: crypto.randomUUID(),
-            type: "payment_received",
-            text: `₹${formatAmount(event.amount)} received from ${event.fromName}`,
-            time: new Date().toISOString(),
-            read: false,
-          },
-          ...prev,
-        ]);
+      // For real-time notifications, refetch the list
+      if (
+        [
+          "payment_request",
+          "payment_received",
+          "balance_credited",
+          "request_rejected",
+        ].includes(event.type)
+      ) {
+        fetch("/api/notifications/list")
+          .then((r) => r.json())
+          .then(({ notifications }) => setNotifications(notifications));
       }
-
-      if (event.type === "balance_credited") {
-        setNotifications((prev) => [
-          {
-            id: crypto.randomUUID(),
-            type: "balance_credited",
-            text: `₹${formatAmount(event.amount)} added to your wallet`,
-            time: new Date().toISOString(),
-            read: false,
-          },
-          ...prev,
-        ]);
-      }
-    };
+    };;
     es.onerror = () => console.warn("[SSE] retrying...");
     return () => es.close();
   }, [loading, fetchAll]);
@@ -255,6 +246,8 @@ export default function DashboardPage() {
     document.addEventListener("mousedown", onClick);
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
+
+  console.log(notifications);
 
   // ── Send ──
   async function onSend(data: SendInput) {
