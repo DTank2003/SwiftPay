@@ -176,7 +176,7 @@ export function AddMoneyModal({
         colorSurface: "#111113",
         colorText: "#fafafa",
         colorTextSecondary: "#71717a",
-        colorTextPlaceholder: "#3f3f46",
+        colorTextPlaceholder: "#71717a",
         colorIcon: "#a1a1aa",
         colorDanger: "#f87171",
         borderRadius: "8px",

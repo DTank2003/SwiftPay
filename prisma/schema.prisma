@@ -18,6 +18,10 @@ model User {
   wallet            Wallet?
   sentTransactions     Transaction[] @relation("SentTransactions")
   receivedTransactions Transaction[] @relation("ReceivedTransactions")
+  contacts Contact[] @relation("UserContacts")
+  contactOf Contact[] @relation("ContactOf")
+  requestsFrom         PaymentRequest[] @relation("RequestsFrom")
+  requestsTo           PaymentRequest[] @relation("RequestsTo")
 }
 
 model Wallet {
@@ -52,6 +56,34 @@ model Notification {
   createdAt DateTime @default(now())
 }
 
+model Contact {
+  id            String   @id @default(cuid())
+  userId        String
+  contactUserId String
+  nickname      String?
+  createdAt     DateTime @default(now())
+
+  user        User @relation("UserContacts",        fields: [userId],        references: [id])
+  contactUser User @relation("ContactOf",           fields: [contactUserId], references: [id])
+
+  @@unique([userId, contactUserId])
+}
+
+model PaymentRequest {
+  id          String               @id @default(cuid())
+  fromUserId  String
+  toUserId    String
+  amount      Float
+  note        String?
+  status      PaymentRequestStatus @default(PENDING)
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  fromUser User @relation("RequestsFrom", fields: [fromUserId], references: [id])
+  toUser   User @relation("RequestsTo",   fields: [toUserId],   references: [id])
+}
+
+
 enum TransactionType {
   P2P
   TOP_UP
@@ -61,4 +93,11 @@ enum TransactionStatus {
   PENDING
   COMPLETED
   FAILED
+}
+
+enum PaymentRequestStatus {
+  PENDING
+  PAID
+  REJECTED
+  EXPIRED
 }

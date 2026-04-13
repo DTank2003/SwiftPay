@@ -902,14 +902,14 @@
 
 .modalSubtitle {
   font-size: 0.75rem;
-  color: #52525b;
+  color: #a1a1aa;
   margin: 0.2rem 0 0;
 }
 
 .modalCloseBtn {
   background: transparent;
   border: none;
-  color: #52525b;
+  color: #a1a1aa;
   font-size: 0.75rem;
   cursor: pointer;
   padding: 0.125rem 0.25rem;
@@ -951,7 +951,7 @@
 }
 
 .quickAmount:hover {
-  border-color: #3f3f46;
+  border-color: #71717a;
   color: #a1a1aa;
 }
 
@@ -969,7 +969,7 @@
 
 .modalStatus {
   font-size: 0.8125rem;
-  color: #52525b;
+  color: #a1a1aa;
   text-align: center;
 }
 

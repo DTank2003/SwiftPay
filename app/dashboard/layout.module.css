@@ -1,29 +1,20 @@
-:root {
-  --accent: #6366f1;
-}
-
-/* ── Layout Shell ── */
 .shell {
   display: grid;
   grid-template-columns: 220px 1fr;
   min-height: 100vh;
-  background-color: #0c0c0e;
+  background: #0c0c0e;
 }
 
-/* ── Sidebar ── */
 .sidebar {
   display: flex;
   flex-direction: column;
   padding: 1.5rem 1rem;
-  gap: 0.25rem;
+  border-right: 1px solid #1f1f23;
   background: #0f0f11;
-  border-right: 1px solid #232326;
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  gap: 0.25rem;
 }
 
-.sidebarBrand {
+.brand {
   display: flex;
   align-items: center;
   gap: 0.625rem;
@@ -31,7 +22,7 @@
   margin-bottom: 1.5rem;
 }
 
-.sidebarBrandIcon {
+.brandIcon {
   width: 1.75rem;
   height: 1.75rem;
   background: #18181b;
@@ -42,11 +33,18 @@
   justify-content: center;
 }
 
-.sidebarBrandName {
+.brandName {
   font-size: 0.875rem;
   font-weight: 600;
   color: #fafafa;
   letter-spacing: -0.01em;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
 }
 
 .navItem {
@@ -64,238 +62,36 @@
   background: transparent;
   width: 100%;
   text-align: left;
+  font-family: inherit;
 }
 
 .navItem:hover {
-  background-color: #18181b;
-  color: #fafafa;
+  background: #18181b;
+  color: #a1a1aa;
 }
 
 .navItemActive {
-  background-color: #18181b;
+  background: #18181b;
   color: #fafafa;
 }
 
 .sidebarFooter {
-  margin-top: auto;
   padding-top: 1rem;
-  border-top: 1px solid #18181b;
+  border-top: 0.5px solid #18181b;
 }
 
-/* ── Main content area ── */
 .main {
   display: flex;
   flex-direction: column;
-  min-width: 0;
-}
-
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.25rem 2rem;
-  border-bottom: 1px solid #18181b;
-  background: #0c0c0e;
-  position: sticky;
-  top: 0;
-  z-index: 40;
-}
-
-.topbarGreeting {
-  font-size: 0.875rem;
-  color: #a1a1aa;
-}
-
-.topbarName {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #fafafa;
-  letter-spacing: -0.01em;
-}
-
-.topbarActions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.topbarActionsInner {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  position: relative;
-}
-
-.avatar {
-  width: 2rem;
-  height: 2rem;
-  background: #18181b;
-  border: 0.5px solid #27272a;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #a1a1aa;
-}
-
-/* ── Notifications ── */
-.topbarBtn {
-  position: relative;
-  width: 2rem;
-  height: 2rem;
-  background: #18181b;
-  border: 0.5px solid #27272a;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: #71717a;
-  transition: border-color 0.15s, color 0.15s;
-  flex-shrink: 0;
-}
-
-.topbarBtn:hover {
-  border-color: #71717a;
-  color: #a1a1aa;
-}
-
-.notifBadge {
-  position: absolute;
-  top: -3px;
-  right: -3px;
-  width: 1rem;
-  height: 1rem;
-  background: #4ade80;
-  border-radius: 50%;
-  font-size: 0.5625rem;
-  font-weight: 700;
-  color: #052e16;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-}
-
-.notifDropdown {
-  position: absolute;
-  top: calc(100% + 0.75rem);
-  right: 0;
-  width: 22rem;
-  background: #111113;
-  border: 0.5px solid #27272a;
-  border-radius: 0.75rem;
   overflow: hidden;
-  z-index: 100;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+  min-height: 100vh;
 }
 
-.notifDropdownHead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.875rem 1rem;
-  border-bottom: 1px solid #18181b;
-}
-
-.notifDropdownTitle {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: #fafafa;
-}
-
-.notifClearBtn {
-  font-size: 0.75rem;
-  color: #71717a;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: color 0.15s;
-}
-
-.notifClearBtn:hover {
-  color: #a1a1aa;
-}
-
-.notifList {
-  max-height: 20rem;
-  overflow-y: auto;
-}
-
-.notifEmpty {
-  padding: 2rem;
-  text-align: center;
-  font-size: 0.8125rem;
-  color: #71717a;
-}
-
-.notifItem {
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #18181b;
-  transition: background-color 0.1s;
-}
-
-.notifItem:last-child {
-  border-bottom: none;
-}
-
-.notifItem:hover {
-  background: #18181b;
-}
-
-.notifItemText {
-  font-size: 0.8125rem;
-  color: #d4d4d8;
-}
-
-.notifItemTime {
-  font-size: 0.6875rem;
-  color: #71717a;
-}
-
-.notifItemReceived {
-  border-left: 2px solid #4ade80;
-}
-
-.notifItemSent {
-  border-left: 2px solid #6366f1;
-}
-
-/* ── Bottom nav ── */
+/* Mobile */
 .bottomNav {
   display: none;
 }
 
-.bottomNavItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  font-size: 0.625rem;
-  font-weight: 500;
-  color: #a1a1aa;
-  text-decoration: none;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  transition: color 0.15s;
-  min-width: 4rem;
-}
-
-.bottomNavItemActive {
-  color: #fafafa;
-}
-
-/* ── Mobile ── */
 @media (max-width: 768px) {
   .shell {
     grid-template-columns: 1fr;
@@ -306,10 +102,6 @@
     display: none;
   }
 
-  .topbar {
-    padding: 1rem 1.25rem;
-  }
-
   .bottomNav {
     display: flex;
     position: fixed;
@@ -318,15 +110,40 @@
     right: 0;
     height: 4.5rem;
     background: #0f0f11;
-    border-top: 1px solid #232326;
+    border-top: 1px solid #1f1f23;
     align-items: center;
     justify-content: space-around;
-    z-index: 50;
+    padding: 0 0.5rem;
     padding-bottom: env(safe-area-inset-bottom);
+    z-index: 50;
   }
+}
 
-  .notifDropdown {
-    width: calc(100vw - 2.5rem);
-    right: -1rem;
-  }
+.bottomNavItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.5625rem;
+  font-weight: 500;
+  color: #a1a1aa;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: color 0.15s;
+  min-width: 3rem;
+}
+
+.bottomNavItem:hover {
+  color: #a1a1aa;
+}
+
+.bottomNavItemActive {
+  color: #fafafa;
 }
