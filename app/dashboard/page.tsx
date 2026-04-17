@@ -50,7 +50,7 @@ interface Notification {
   id: string;
   type: string;
   text: string;
-  time: string;
+  createdAt: string;
   read: boolean;
 }
 
@@ -100,7 +100,8 @@ function timeAgo(iso: string) {
   const diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
   if (diff < 60) return "just now";
   if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  return `${Math.floor(diff / 3600)}h ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return `${Math.floor(diff / 86400)}d ago`;
 }
 
 function getTimeOfDay() {
@@ -271,6 +272,24 @@ export default function DashboardPage() {
     }
   }
 
+  async function clearAllNotifications() {
+    try {
+      const res = await fetch("/api/notifications/mark-read", {
+        method: "PATCH",
+      });
+
+      if (!res.ok) {
+        console.error("Failed to clear notifications");
+        return;
+      }
+
+      setNotifications([]);
+      setNotifOpen(false);
+    } catch (err) {
+      console.error("Failed to clear notifications", err);
+    }
+  }
+
   if (loading) {
     return (
       <div className={s.page}>
@@ -330,10 +349,7 @@ export default function DashboardPage() {
                 {notifications.length > 0 && (
                   <button
                     className={s.notifClear}
-                    onClick={() => {
-                      setNotifications([]);
-                      setNotifOpen(false);
-                    }}
+                    onClick={clearAllNotifications}
                   >
                     Clear all
                   </button>
@@ -353,7 +369,7 @@ export default function DashboardPage() {
                       }`}
                     >
                       <p className={s.notifItemText}>{n.text}</p>
-                      <p className={s.notifItemTime}>{timeAgo(n.time)}</p>
+                      <p className={s.notifItemTime}>{timeAgo(n.createdAt)}</p>
                     </div>
                   ))
                 )}

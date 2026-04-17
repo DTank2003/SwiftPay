@@ -168,7 +168,7 @@ export default function ContactsPage() {
           <Search size={15} className={s.searchIcon} />
           <input
             type="text"
-            placeholder="Search by name or email to add contacts..."
+            placeholder="Search by name or phone number to add contacts..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className={s.searchInput}
