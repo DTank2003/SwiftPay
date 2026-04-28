@@ -133,7 +133,7 @@ export async function GET(req: NextRequest) {
             amount: tx.amount,
             status: tx.status,
             type: tx.fromUserId === userId ? "debit" : "credit",
-            counterparty: tx.fromUserId === userId ? tx.toUser.name : tx.fromUser.name,
+            counterparty: tx.fromUserId === userId ? tx.toUser.name : tx.fromUser ? tx.fromUser.name : "",
             createdAt: tx.createdAt,
             note: tx.note ?? "",
         })),
