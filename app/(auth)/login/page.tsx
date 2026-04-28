@@ -142,16 +142,16 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className={s.divider}>
+          {/* <div className={s.divider}>
             <div className={s.dividerLine} />
             <span className={s.dividerText}>or continue with</span>
             <div className={s.dividerLine} />
-          </div>
+          </div> */}
 
-          <button className={s.btnGhost}>
+          {/* <button className={s.btnGhost}>
             <Globe size={15} strokeWidth={1.5} />
             Continue with SSO
-          </button>
+          </button> */}
 
           <p className={s.footerText}>
             Don&apos;t have an account?{" "}

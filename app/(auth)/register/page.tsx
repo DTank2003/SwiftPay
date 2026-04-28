@@ -75,7 +75,7 @@ export default function RegisterPage() {
               <input
                 {...register("name")}
                 type="text"
-                placeholder="Dhyey Shah"
+                placeholder="John Doe"
                 className={`${s.input} ${errors.name ? s.inputError : ""}`}
               />
               {errors.name && (
