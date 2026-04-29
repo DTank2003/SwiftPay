@@ -71,7 +71,7 @@ export default function RequestsPage() {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<RequestInput>({ resolver: zodResolver(requestSchema) });
+  } = useForm<RequestInput>({ resolver: zodResolver(requestSchema) as any });
 
   function showToast(msg: string) {
     setToast(msg);
@@ -300,7 +300,7 @@ export default function RequestsPage() {
             </div>
 
             <form
-              onSubmit={handleSubmit(onCreateRequest)}
+              onSubmit={handleSubmit(onCreateRequest as any)}
               style={{
                 display: "flex",
                 flexDirection: "column",
@@ -316,7 +316,7 @@ export default function RequestsPage() {
                   className={`${s.input} ${errors.toPhone ? s.inputError : ""}`}
                 />
                 {errors.toPhone && (
-                  <p className={s.errorText}>{errors.toEmail.message}</p>
+                  <p className={s.errorText}>{errors.toPhone.message}</p>
                 )}
               </div>
 

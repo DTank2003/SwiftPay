@@ -55,14 +55,14 @@ export default function ContactsPage() {
   const [payTarget, setPayTarget] = useState<ContactUser | null>(null);
   const [payError, setPayError] = useState("");
 
-  const searchTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const searchTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<SendInput>({ resolver: zodResolver(sendSchema) });
+  } = useForm<SendInput>({ resolver: zodResolver(sendSchema) as any });
 
   function showToast(msg: string) {
     setToast(msg);
@@ -359,7 +359,7 @@ export default function ContactsPage() {
             </div>
 
             <form
-              onSubmit={handleSubmit(onPay)}
+              onSubmit={handleSubmit(onPay as any)}
               style={{
                 display: "flex",
                 flexDirection: "column",

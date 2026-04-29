@@ -55,7 +55,7 @@ interface Notification {
 }
 
 const sendSchema = z.object({
-  toPhone: z.string("Invalid phone number"),
+  toPhone: z.string().min(1, "Recipient phone number is required"),
   amount: z.coerce
     .number()
     .positive("Must be positive")
@@ -167,7 +167,7 @@ export default function DashboardPage() {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<SendInput>({ resolver: zodResolver(sendSchema) });
+  } = useForm<SendInput>({ resolver: zodResolver(sendSchema) as any });
 
   function showToast(msg: string) {
     setToast(msg);
@@ -426,7 +426,7 @@ export default function DashboardPage() {
           {/* Send money */}
           <div className={s.sendCard}>
             <p className={s.cardTitle}>Send money</p>
-            <form className={s.sendForm} onSubmit={handleSubmit(onSend)}>
+            <form className={s.sendForm} onSubmit={handleSubmit(onSend as any)}>
               <div className={s.sendRow}>
                 <div>
                   <label className={s.fieldLabel}>Recipient phone number</label>

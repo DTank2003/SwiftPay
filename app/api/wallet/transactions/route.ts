@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { Prisma, TransactionStatus, TransactionType } from "@prisma/client";
 
 const PAGE_SIZE = 10;
 
@@ -14,33 +15,25 @@ export const GET = (async (req: NextRequest) => {
     const skip = (page - 1) * PAGE_SIZE;
 
     // Build where clause based on filters
-    type WhereClause = {
-        OR?: Array<{ fromUserId?: string; toUserId?: string; status?: string }>;
-        fromUserId?: string;
-        toUserId?: string;
-        status?: string;
-        type?: string;
-    };
-
-    let baseWhere: WhereClause;
+    let baseWhere: Prisma.TransactionWhereInput;
 
     if (type === "sent") {
-        baseWhere = { fromUserId: userId, type: "P2P" };
+        baseWhere = { fromUserId: userId, type: TransactionType.P2P };
     } else if (type === "received") {
-        baseWhere = { toUserId: userId, status: "COMPLETED", type: "P2P" };
+        baseWhere = { toUserId: userId, status: TransactionStatus.COMPLETED, type: TransactionType.P2P };
     } else {
         // all — sender sees everything, receiver sees only completed
         baseWhere = {
             OR: [
                 { fromUserId: userId },
-                { toUserId: userId, status: "COMPLETED" },
+                { toUserId: userId, status: TransactionStatus.COMPLETED },
             ],
         };
     }
 
     // Apply status filter on top
-    const where = status !== "all"
-        ? { ...baseWhere, status }
+    const where: Prisma.TransactionWhereInput = status !== "all"
+        ? { ...baseWhere, status: status as TransactionStatus }
         : baseWhere;
 
     const [transactions, total] = await Promise.all([
